@@ -4,6 +4,7 @@ import lifeapp.model.DTO_LoginRequest;
 import lifeapp.model.DTO_RegisterRequest;
 import lifeapp.model.User;
 import lifeapp.repository.UserRepository;
+import lifeapp.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,10 @@ public class AuthService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     public String register(DTO_RegisterRequest req) {
         if (userRepo.existsByUsername(req.getUsername())) {
@@ -40,8 +45,6 @@ public class AuthService {
         if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
             return "Password incorreta.";
         }
-        // Aqui vamos gerar o JWT (vamos fazer no passo 7)
-        String token = "jwt-token-aqui";
-        return token;
+        return jwtUtil.generateToken(user.getUsername());
     }
 }
