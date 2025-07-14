@@ -1,4 +1,4 @@
-package com.malta.lifeapp_backend;
+package lifeapp;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
