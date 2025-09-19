@@ -32,6 +32,7 @@ public class AuthService {
         User u = new User();
         u.setUsername(req.getUsername().toLowerCase());
         u.setPassword(passwordEncoder.encode(req.getPassword()));
+        u.setEmail(req.getEmail().toLowerCase());
         userRepo.save(u);
         return "Registo efetuado com sucesso!";
     }
