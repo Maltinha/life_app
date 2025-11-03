@@ -38,7 +38,7 @@ public class AuthService {
     }
 
     public String login(DTO_LoginRequest req) {
-        Optional<User> userOpt = userRepo.findByUsername(req.getUsername());
+        Optional<User> userOpt = userRepo.findByUsername(req.getUsername().toLowerCase());
         if (userOpt.isEmpty()) {
             return "Username não existe.";
         }
