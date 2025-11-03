@@ -5,18 +5,20 @@ import { Ionicons } from '@expo/vector-icons';
 export default function LoginScreen({ navigation }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [secure, setSecure] = useState(true); 
-
+  const [secure, setSecure] = useState(true)
   const handleLogin = async () => {
     try {
-      const response = await fetch('http://10.214.206.7:8080/api/auth/login', {
+      const response = await fetch('http://192.168.1.120:8080/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       });
       const result = await response.text();
-      if (response.ok) Alert.alert('Sucesso', 'Login efetuado com sucesso!');
-      else Alert.alert('Erro', result);
+      if (response.ok) {
+         navigation.navigate('Home') 
+      } else {
+        Alert.alert('Erro', result);
+      }
     } catch (error) {
       Alert.alert('Erro de conexão', error.message);
     }
@@ -35,19 +37,19 @@ export default function LoginScreen({ navigation }) {
         textAlign="left"  // texto à direita
       />
 
-      <View style={styles.passwordContainer}>
-  <TextInput
-    style={styles.passwordInput}
-    placeholder="Password"
-    placeholderTextColor="#999"
-    secureTextEntry={secure}
-    value={password}
-    onChangeText={setPassword}
-  />
-  <TouchableOpacity onPress={() => setSecure(!secure)}>
-    <Ionicons name={secure ? "eye-off" : "eye"} size={24} color="gray" />
-  </TouchableOpacity>
-</View>
+    <View style={styles.passwordContainer}>
+        <TextInput
+            style={styles.passwordInput}
+            placeholder="Password"
+            placeholderTextColor="#999"
+            secureTextEntry={secure}
+            value={password}
+            onChangeText={setPassword}
+        />
+        <TouchableOpacity onPress={() => setSecure(!secure)}>
+            <Ionicons name={secure ? "eye-off" : "eye"} size={24} color="gray" />
+        </TouchableOpacity>
+    </View>
 
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
@@ -87,22 +89,21 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 3,
   },
-passwordContainer: {
-  flexDirection: 'row',  // coloca input e ícone na mesma linha
-  alignItems: 'center',  // centraliza verticalmente
-  backgroundColor: '#fff',
-  borderRadius: 10,
-  borderWidth: 1,
-  borderColor: '#ddd',
-  paddingHorizontal: 15,
-  marginBottom: 20,
-},
-
-passwordInput: {
-  flex: 1,             // ocupa todo o espaço restante
-  paddingVertical: 15, // mantém altura consistente
-  fontSize: 16,
-},
+  passwordContainer: {
+    flexDirection: 'row',  // coloca input e ícone na mesma linha
+    alignItems: 'center',  // centraliza verticalmente
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    paddingHorizontal: 15,
+    marginBottom: 20,
+  },
+  passwordInput: {
+    flex: 1,             // ocupa todo o espaço restante
+    paddingVertical: 15, // mantém altura consistente
+    fontSize: 16,
+  },
   button: {
     backgroundColor: '#148d75ff',
     padding: 15,
