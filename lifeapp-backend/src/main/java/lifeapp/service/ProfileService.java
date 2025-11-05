@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import lifeapp.repository.UserRepository;
 import lifeapp.model.User;
 import lifeapp.security.JwtUtil;
+import lifeapp.security.JwtUtil;
 
 import java.io.IOException;
 import java.nio.file.*;

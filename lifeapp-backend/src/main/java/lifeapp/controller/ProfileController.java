@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 
 @RestController
@@ -36,7 +35,7 @@ public class ProfileController {
             byte[] image = imageService.getProfileImage(token);
             return ResponseEntity
                     .ok()
-                    .header("Content-Type", "image/jpeg")
+                    .header("Content-Type", "image/*")
                     .body(image)
                     ;
         } catch (IOException e) {
@@ -56,5 +55,7 @@ public class ProfileController {
             return ResponseEntity.status(401).body(null);
         }
     }
+
+
 
 }

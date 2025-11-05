@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen({ navigation, setUserToken }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [secure, setSecure] = useState(true)
+  const [secure, setSecure] = useState(true);
+
   const handleLogin = async () => {
     try {
       const response = await fetch('http://192.168.1.120:8080/api/auth/login', {
@@ -13,14 +15,23 @@ export default function LoginScreen({ navigation }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       });
+
+      // Backend returns a plain string
       const result = await response.text();
+      console.log('Response ok:', response.ok);
+      console.log('Result:', result);
+
       if (response.ok) {
-         navigation.navigate('Home') 
+        // Store the token in AsyncStorage
+        await AsyncStorage.setItem('userToken', result);
+        // Update state in App.js to switch stack
+        setUserToken(result);
       } else {
-        Alert.alert('Erro', result);
+        // Login failed
+        Alert.alert('Login failed', result);
       }
     } catch (error) {
-      Alert.alert('Erro de conexão', error.message);
+      Alert.alert('Connection error', error.message);
     }
   };
 
@@ -34,28 +45,27 @@ export default function LoginScreen({ navigation }) {
         placeholderTextColor="#999"
         value={username}
         onChangeText={setUsername}
-        textAlign="left"  // texto à direita
       />
 
-    <View style={styles.passwordContainer}>
+      <View style={styles.passwordContainer}>
         <TextInput
-            style={styles.passwordInput}
-            placeholder="Password"
-            placeholderTextColor="#999"
-            secureTextEntry={secure}
-            value={password}
-            onChangeText={setPassword}
+          style={styles.passwordInput}
+          placeholder="Password"
+          placeholderTextColor="#999"
+          secureTextEntry={secure}
+          value={password}
+          onChangeText={setPassword}
         />
         <TouchableOpacity onPress={() => setSecure(!secure)}>
-            <Ionicons name={secure ? "eye-off" : "eye"} size={24} color="gray" />
+          <Ionicons name={secure ? 'eye-off' : 'eye'} size={24} color="gray" />
         </TouchableOpacity>
-    </View>
+      </View>
 
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate('Register')} style={styles.linkContainer}>
+      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
         <Text style={styles.link}>Register Page</Text>
       </TouchableOpacity>
     </View>
@@ -65,16 +75,16 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'top',
-    padding: 30,
+    paddingTop: 40,
+    paddingHorizontal: 30,
     backgroundColor: '#f0f4f7',
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 40,
-    textAlign: 'left',
     color: '#333',
+    textAlign: 'left',
   },
   input: {
     backgroundColor: '#fff',
@@ -84,14 +94,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderWidth: 1,
     borderColor: '#ddd',
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 3,
   },
   passwordContainer: {
-    flexDirection: 'row',  // coloca input e ícone na mesma linha
-    alignItems: 'center',  // centraliza verticalmente
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 10,
     borderWidth: 1,
@@ -100,8 +106,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   passwordInput: {
-    flex: 1,             // ocupa todo o espaço restante
-    paddingVertical: 15, // mantém altura consistente
+    flex: 1,
+    paddingVertical: 15,
     fontSize: 16,
   },
   button: {
@@ -110,21 +116,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     marginBottom: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 3,
   },
   buttonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },
-  linkContainer: {
-    alignItems: 'right', // centraliza o link horizontalmente
-  },
   link: {
-    color: '#148d75ff', // cor diferente do botão
+    color: '#148d75ff',
     textAlign: 'right',
     fontSize: 16,
   },

@@ -2,8 +2,15 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({ navigation, setUserToken}) {
+
+  const handleLogout = async () => { 
+    await AsyncStorage.removeItem('userToken');
+    setUserToken(null);
+  };
+
   return (
     <View style={styles.container}>
         <Text style={styles.title}>Menu</Text>
@@ -56,7 +63,7 @@ export default function HomeScreen({ navigation }) {
           
         </View>
 
-         <TouchableOpacity style={styles.logoutButton} onPress={() => navigation.navigate('Login')}>
+         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
                 <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
     </View>
